@@ -11,8 +11,10 @@ export default function UploadForm() {
 
 
   const folderIds = process.env.REACT_APP_GDRIVE_FOLDER_IDS.split(',');
+  
 
   const handleUpload = async () => {
+    
     if (!files.length) return;
 
     setUploading(true);
@@ -21,38 +23,46 @@ export default function UploadForm() {
     const updatedStatuses = Array.from(files).map(f => ({ name: f.name, status: 'Pending' }));
     setFileStatuses(updatedStatuses);
 
-    let folderIndex = 0;
+    // let folderIndex = 0;
 
-    await Promise.all(Array.from(files).map(async (file, i) => {
-      updateStatus(file.name, 'Uploading');
+let folderIndex = 0;
 
-      const metadata = {
-        name: file.name,
-        mimeType: file.type,
-        parents: [folderIds[folderIndex % folderIds.length]]
-      };
-      folderIndex++;
+for (const file of files) {
+  
+  updateStatus(file.name, 'Uploading');
 
-      const form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
-      form.append('file', file);
+  const metadata = {
+    name: file.name,
+    mimeType: file.type,
+    parents: [folderIds[folderIndex % folderIds.length]]
+  };
+  console.log(`Uploading ${file.name} to folder: ${metadata.parents[0]}`);
 
-      try {
-        const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-          body: form
-        });
+  folderIndex++;
 
-        if (res.ok) {
-          updateStatus(file.name, '✅ Done');
-        } else {
-          updateStatus(file.name, '❌ Error');
-        }
-      } catch {
-        updateStatus(file.name, '❌ Error');
-      }
-    }));
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+  form.append('file', file);
+
+  try {
+    const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: form
+    });
+    console.log(`Uploading ${file.name} to folder: ${folderIds[folderIndex % folderIds.length]}`);
+
+
+    if (res.ok) {
+      updateStatus(file.name, '✅ Done');
+    } else {
+      updateStatus(file.name, '❌ Error');
+    }
+  } catch {
+    updateStatus(file.name, '❌ Error');
+  }
+}
+
 
     triggerFireworks();
     setUploading(false);

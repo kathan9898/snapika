@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const users = {
   "rand6148@gmail.com": "123",
-  "xyz@gmail.com": "123"
+  "menezesflavian13@gmail.com": "123"
 };
 
 export default function Login() {
