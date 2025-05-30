@@ -10,16 +10,16 @@ export default function OTPVerify() {
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const email = localStorage.getItem("userEmail");
   const navigate = useNavigate();
 
   const sendOtp = () => {
-    if (!email) {
-      setError("Email not found.");
-      return;
-    }
+    if (!email || sending) return;
+
+    setSending(true);
     generatedOTP = generateOTP();
-    console.log("OTP:", generatedOTP);
+
     emailjs.send(
       process.env.REACT_APP_EMAILJS_SERVICE_ID,
       process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
@@ -30,6 +30,8 @@ export default function OTPVerify() {
       setError('');
     }).catch(() => {
       setError("Failed to send OTP. Try again.");
+    }).finally(() => {
+      setSending(false);
     });
   };
 
@@ -39,8 +41,7 @@ export default function OTPVerify() {
       return;
     }
     if (otp === generatedOTP) {
-      setError('');
-      navigate('/gallery');
+      navigate('/dashboard');
     } else {
       setError("Incorrect OTP. Try again.");
     }
@@ -48,15 +49,23 @@ export default function OTPVerify() {
 
   return (
     <div className="container">
-      <h2 style={{ textAlign: 'center' }}>OTP Verification</h2>
+      <h2>OTP Verification</h2>
+      <p>We've sent a one-time code to <strong>{email}</strong></p>
       {error && <div className="error">{error}</div>}
+
       {!sent ? (
-        <button onClick={sendOtp}>Send OTP</button>
+        <button onClick={sendOtp} disabled={sending}>
+          {sending ? "Sending..." : "Send OTP"}
+        </button>
       ) : (
         <>
-          <input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
+          <input
+            type="text"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
           <button onClick={verifyOTP}>Verify</button>
-          <button style={{ backgroundColor: '#555', marginTop: '10px' }} onClick={sendOtp}>Resend OTP</button>
         </>
       )}
     </div>

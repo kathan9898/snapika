@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/main.css';
 
 const users = {
   "rand6148@gmail.com": "123",
@@ -12,6 +11,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("userEmail")) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,14 +34,12 @@ export default function Login() {
   };
 
   return (
-    <div className="container">
-      <h2 style={{ textAlign: 'center' }}>Snapika Login</h2>
+    <div>
+      <h2>Snapika Login</h2>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        {error && <div className="error">{error}</div>}
-        <input type="email" placeholder="Email" value={email}
-          onChange={(e) => setEmail(e.target.value)} />
-        <input type="password" placeholder="Password" value={password}
-          onChange={(e) => setPassword(e.target.value)} />
+        <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
         <button type="submit">Login & Send OTP</button>
       </form>
     </div>
