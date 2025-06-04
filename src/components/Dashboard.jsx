@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import UploadForm from './UploadForm';
 import Gallery from './Gallery';
+import UploadToDrive from './UploadToDrive';
 import { useNavigate } from 'react-router-dom';
 import '../styles/main.css';
 
@@ -27,8 +28,24 @@ export default function Dashboard() {
         {menuOpen && (
           <>
             <div className="nav-items">
-              <button className={activeTab === 'upload' ? 'active' : ''} onClick={() => setActiveTab('upload')}>📤 Upload</button>
-              <button className={activeTab === 'gallery' ? 'active' : ''} onClick={() => setActiveTab('gallery')}>🖼 Gallery</button>
+              <button
+                className={activeTab === 'upload' ? 'active' : ''}
+                onClick={() => setActiveTab('upload')}
+              >
+                📤 Upload
+              </button>
+              <button
+                className={activeTab === 'gallery' ? 'active' : ''}
+                onClick={() => setActiveTab('gallery')}
+              >
+                🖼 Gallery
+              </button>
+              <button
+                className={activeTab === 'custom' ? 'active' : ''}
+                onClick={() => setActiveTab('custom')}
+              >
+                📂 Custom Upload
+              </button>
             </div>
 
             <div className="sidebar-footer">
@@ -41,7 +58,9 @@ export default function Dashboard() {
       </div>
 
       <div className="content-area">
-        {activeTab === 'upload' ? <UploadForm /> : <Gallery />}
+        {activeTab === 'upload' && <UploadForm />}
+        {activeTab === 'gallery' && <Gallery />}
+        {activeTab === 'custom' && <UploadToDrive />}
       </div>
     </div>
   );

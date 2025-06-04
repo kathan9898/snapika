@@ -12,9 +12,11 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
     "canvas-confetti": "^1.9.3",
+    "date-fns": "^4.1.0",
     "emailjs-com": "^3.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-lazy-load-image-component": "^1.6.3",
     "react-router-dom": "^7.6.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
