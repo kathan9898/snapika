@@ -10,34 +10,41 @@ export default function Gallery() {
   const [grouped, setGrouped] = useState({});
   const [selected, setSelected] = useState([]);
   const [selecting, setSelecting] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const fetchAllFiles = useCallback(async () => {
-    const token = await getAccessToken();
-    const folders = process.env.REACT_APP_GDRIVE_FOLDER_IDS.split(',');
-    let all = [];
+    try {
+      const token = await getAccessToken();
+      const folders = process.env.REACT_APP_GDRIVE_FOLDER_IDS.split(',');
+      let all = [];
 
-    for (const folderId of folders) {
-      const q = `'${folderId}' in parents and trashed=false`;
-      const fields = 'files(id,name,thumbnailLink,webContentLink,webViewLink,mimeType,createdTime)';
-      const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=${fields}&orderBy=modifiedTime desc`, {
-        headers: { Authorization: `Bearer ${token}` }
+      for (const folderId of folders) {
+        const q = `'${folderId}' in parents and trashed=false`;
+        const fields = 'files(id,name,thumbnailLink,webContentLink,webViewLink,mimeType,createdTime)';
+        const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${encodeURIComponent(q)}&fields=${fields}&orderBy=modifiedTime desc`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        const json = await res.json();
+        all = [...all, ...(json.files || [])];
+      }
+
+      all.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
+      setFiles(all);
+
+      const groups = {};
+      all.forEach(f => {
+        const month = format(new Date(f.createdTime), 'MMMM yyyy');
+        if (!groups[month]) groups[month] = [];
+        groups[month].push(f);
       });
 
-      const json = await res.json();
-      all = [...all, ...(json.files || [])];
+      setGrouped(groups);
+    } catch (err) {
+      console.error("Failed to fetch files:", err);
+    } finally {
+      setLoading(false);
     }
-
-    all.sort((a, b) => new Date(b.createdTime) - new Date(a.createdTime));
-    setFiles(all);
-
-    const groups = {};
-    all.forEach(f => {
-      const month = format(new Date(f.createdTime), 'MMMM yyyy');
-      if (!groups[month]) groups[month] = [];
-      groups[month].push(f);
-    });
-
-    setGrouped(groups);
   }, []);
 
   useEffect(() => {
@@ -46,37 +53,56 @@ export default function Gallery() {
 
   const handleFileClick = (file) => {
     if (selecting) {
-      if (selected.some(f => f.id === file.id)) {
-        setSelected(prev => prev.filter(f => f.id !== file.id));
-      } else {
-        setSelected(prev => [...prev, file]);
-      }
+      setSelected(prev =>
+        prev.some(f => f.id === file.id)
+          ? prev.filter(f => f.id !== file.id)
+          : [...prev, file]
+      );
     } else {
       window.open(file.webViewLink, '_blank');
     }
   };
 
   const handleLongPress = () => setSelecting(true);
-  const handleDownload = () => {
-    selected.forEach(f => {
+
+ const handleDownload = () => {
+  let delay = 0;
+
+  selected.forEach((file, index) => {
+    setTimeout(() => {
       const a = document.createElement('a');
-      a.href = f.webContentLink;
-      a.download = f.name;
+      a.href = file.webContentLink;
+      a.download = file.name;
+      a.target = '_blank';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-    });
-    setSelected([]);
-    setSelecting(false);
-  };
+    }, delay);
+
+    delay += 500; // 0.5 second delay between each file
+  });
+
+  setSelected([]);
+  setSelecting(false);
+};
+
 
   return (
     <div className="gallery-container">
       <h2>📁 Gallery</h2>
+
       {selecting && (
         <button onClick={handleDownload} className="download-btn">
           ⬇️ Download ({selected.length})
         </button>
+      )}
+
+      {loading && <p>Loading files...</p>}
+
+      {!loading && files.length === 0 && (
+        <p style={{ marginTop: '20px', fontStyle: 'italic' }}>
+          No files found in the linked Google Drive folders.
+        </p>
       )}
 
       {Object.entries(grouped).map(([month, items]) => (
@@ -92,13 +118,15 @@ export default function Gallery() {
                   e.preventDefault();
                   handleLongPress();
                 }}
+                role="button"
+                aria-label={`Open ${file.name}`}
               >
-                <LazyLoadImage
-                  src={file.thumbnailLink}
-                  alt={file.name}
-                  effect="blur"
-                  className="thumb-img"
-                />
+               <LazyLoadImage
+                src={file.thumbnailLink || file.webContentLink}
+                alt={file.name}
+                effect="blur"
+                className="thumb-img"
+              />
                 <p className="file-name">{file.name}</p>
               </div>
             ))}
