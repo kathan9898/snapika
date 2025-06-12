@@ -1,0 +1,26 @@
+.storage-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.folder-usage {
+  margin-bottom: 20px;
+}
+
+.label {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.bar-wrapper {
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 18px;
+}
+
+.bar {
+  height: 100%;
+  transition: width 0.4s ease-in-out;
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import UploadForm from './UploadForm';
 import Gallery from './Gallery';
 import UploadToDrive from './UploadToDrive';
+import StorageOverview from './StorageOverview';
 import { useNavigate } from 'react-router-dom';
 import '../styles/main.css';
 
@@ -46,6 +47,8 @@ export default function Dashboard() {
               >
                 📂 Custom Upload
               </button>
+              <button onClick={() => setActiveTab('storage')}>📦 Storage</button>
+
             </div>
 
             <div className="sidebar-footer">
@@ -61,6 +64,7 @@ export default function Dashboard() {
         {activeTab === 'upload' && <UploadForm />}
         {activeTab === 'gallery' && <Gallery />}
         {activeTab === 'custom' && <UploadToDrive />}
+        {activeTab === 'storage' &&<StorageOverview />}
       </div>
     </div>
   );
