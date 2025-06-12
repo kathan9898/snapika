@@ -26,6 +26,11 @@ useEffect(() => {
     navigate('/');
   };
 
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setMenuOpen(false);
+  };
+
   return (
     <div className="side-layout">
       <div className={`sidebar ${menuOpen ? 'open' : ''}`}>
@@ -36,23 +41,35 @@ useEffect(() => {
             <div className="nav-items">
               <button
                 className={activeTab === 'upload' ? 'active' : ''}
-                onClick={() => setActiveTab('upload')}
+                onClick={() => {
+                  setActiveTab('upload');
+                  handleTabClick('upload');
+                }}
               >
                 📤 Upload
               </button>
               <button
                 className={activeTab === 'gallery' ? 'active' : ''}
-                onClick={() => setActiveTab('gallery')}
+                onClick={() => {
+                  setActiveTab('gallery');
+                  handleTabClick('gallery');
+                }}
               >
                 🖼 Gallery
               </button>
               <button
                 className={activeTab === 'custom' ? 'active' : ''}
-                onClick={() => setActiveTab('custom')}
+                onClick={() => {
+                  setActiveTab('custom');
+                  handleTabClick('custom');
+                }}
               >
                 📂 Custom Upload
               </button>
-              <button onClick={() => setActiveTab('storage')}>📦 Storage</button>
+              <button onClick={() => {
+                setActiveTab('storage');
+                handleTabClick('storage');
+              }}>📦 Storage</button>
 
             </div>
 
