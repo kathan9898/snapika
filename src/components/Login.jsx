@@ -15,7 +15,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("userEmail")) {
+    if (localStorage.getItem("userEmail") && localStorage.getItem("Verfied")) {
       navigate('/dashboard');
     }
   }, [navigate]);

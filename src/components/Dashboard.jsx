@@ -11,13 +11,18 @@ export default function Dashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const email = localStorage.getItem("userEmail");
+  const isVerified = localStorage.getItem("Verfied");
 
   useEffect(() => {
     if (!email) navigate('/');
   }, [navigate, email]);
-
+  
+useEffect(() => {
+  if (!isVerified) navigate('/');
+}, [navigate, isVerified]);
   const logout = () => {
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("Verfied");
     navigate('/');
   };
 

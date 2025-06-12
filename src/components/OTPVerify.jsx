@@ -41,6 +41,7 @@ export default function OTPVerify() {
       return;
     }
     if (otp === generatedOTP) {
+      localStorage.setItem("Verfied", true);
       navigate('/dashboard');
     } else {
       setError("Incorrect OTP. Try again.");
