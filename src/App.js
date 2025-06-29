@@ -4,6 +4,8 @@ import Login from './components/Login';
 import OTPVerify from './components/OTPVerify';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import DedicatedGallery from './components/DedicatedGallery';
+
 
 export default function App() {
   return (
@@ -17,6 +19,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      {/* <Route path="/dedicated-gallery" element={<DedicatedGallery />} /> */}
       <Route
         path="/dashboard"
         element={

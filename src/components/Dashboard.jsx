@@ -5,6 +5,7 @@ import UploadToDrive from './UploadToDrive';
 import StorageOverview from './StorageOverview';
 import { useNavigate } from 'react-router-dom';
 import '../styles/main.css';
+import DedicatedGallery from './DedicatedGallery';
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('upload');
@@ -48,7 +49,7 @@ useEffect(() => {
               >
                 📤 Upload
               </button>
-              <button
+              {/* <button
                 className={activeTab === 'gallery' ? 'active' : ''}
                 onClick={() => {
                   setActiveTab('gallery');
@@ -56,7 +57,8 @@ useEffect(() => {
                 }}
               >
                 🖼 Gallery
-              </button>
+              </button> */}
+              <button onClick={() => setActiveTab('dedicated')}>🗂 Dedicated Gallery</button>
               <button
                 className={activeTab === 'custom' ? 'active' : ''}
                 onClick={() => {
@@ -84,9 +86,10 @@ useEffect(() => {
 
       <div className="content-area">
         {activeTab === 'upload' && <UploadForm />}
-        {activeTab === 'gallery' && <Gallery />}
+        {/* {activeTab === 'gallery' && <Gallery />} */}
         {activeTab === 'custom' && <UploadToDrive />}
         {activeTab === 'storage' &&<StorageOverview />}
+        {activeTab === 'dedicated' && <DedicatedGallery />}
       </div>
     </div>
   );

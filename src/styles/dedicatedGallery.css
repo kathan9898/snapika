@@ -1,0 +1,77 @@
+.dedicated-gallery {
+  padding: 1rem;
+  background: linear-gradient(to bottom, #1a1a1a, #121212);
+  color: #fff;
+  min-height: 100vh;
+}
+
+.dedicated-gallery h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.month-section {
+  margin-bottom: 2rem;
+}
+
+.month-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.toggle-btn {
+  background: #444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background: #666;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.media-tile {
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  text-align: center;
+  padding: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.media-tile:hover {
+  transform: scale(1.03);
+}
+
+.media-tile img,
+.media-tile video {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.media-tile p {
+  font-size: 0.75rem;
+  margin: 5px 0 0;
+  color: #ccc;
+}
+
+.loading-msg {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
